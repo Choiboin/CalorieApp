@@ -1,208 +1,73 @@
-import re
+import * as nlp from 'nlp.js';
+import AsyncStorage from '@react-native-community/async-storage';
+import Logger from 'react-native-logger';
 
-def nlp_interaction(user_input):
-    # Simple NLP interaction to understand user input
-    if "hello" in user_input.lower():
-        return "Hello! How can I assist you today?"
-    elif "goodbye" in user_input.lower():
-        return "Goodbye! Have a great day."
-    else:
-        return "I'm sorry, I didn't understand that."
+// Configure logger
+Logger.config({
+  level: 'info', // Adjust log level as needed
+  formatter: (log) => `${log.level} - ${log.message}`,
+});
 
-def login(username, password):
-    # Simple login function (replace with your authentication logic)
-    if username == "user" and password == "password":
-        return True
-    else:
-        return False
-
-# Main program loop
-while True:
-    user_input = input("User: ")
-
-    # Check for exit command
-    if user_input.lower() == "exit":
-        print("Exiting program. Goodbye!")
-        break
-
-    # NLP interaction
-    response = nlp_interaction(user_input)
-    print("Bot:", response)
-
-    # Login functionality
-    if "login" in user_input.lower():
-        username = input("Enter username: ")
-        password = input("Enter password: ")
-
-        if login(username, password):
-            print("Login successful!")
-        else:
-            print("Invalid username or password. Please try again.")
+// Initialize NLP instance
+const myNlp = nlp.build();
 
 
-COMMAND TO AI: "create an npl code that has log in"
-FROM BLACKBOX AI
-# Sample user data
-user_data = {
-    "alice": "password123",
-    "bob": "qwerty456"
-}
-
-def login(username, password):
-    if username in user_data and user_data[username] == password:
-        print(f"Welcome, {username}!")
-    else:
-        print("Invalid credentials. Please try again.")
-
-# User interaction
-username = input("Enter your username: ")
-password = input("Enter your password: ")
-
-login(username, password)
 
 
-COMMAND TO AI: "create an npl code that has log in for react js"
-
-
-FROM CHATGPT
-
-import React, { useState } from 'react';
-
-const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const handleLogin = async () => {
-    try {
-      // You would replace the following with actual API calls to your backend
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Login successful
-        setErrorMessage('');
-        // Perform any necessary actions upon successful login
-        console.log('Login successful');
-      } else {
-        // Login failed
-        setErrorMessage(data.message || 'Login failed');
-      }
-    } catch (error) {
-      console.error('Error during login:', error);
-      setErrorMessage('An unexpected error occurred');
+const loadFoodData = async () => {
+  try {
+    const data = await AsyncStorage.getItem('foodData');
+    if (data) {
+      myNlp.addDocument(data);
+      Logger.info('Food data loaded from storage');
+    } else {
+      // Load data from your file here (e.g., require('./foods.txt'))
+      // Parse the file and assign the content to the `data` variable
+      myNlp.addDocument(data);
+      Logger.info('Food data loaded from file');
+      await AsyncStorage.setItem('foodData', data);
     }
-  };
-
-  return (
-    <div>
-      <h2>Login</h2>
-      <div>
-        <label htmlFor="username">Username:</label>
-        <input
-          type="text"
-          id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-      <button onClick={handleLogin}>Login</button>
-    </div>
-  );
+  } catch (error) {
+    Logger.error('Error loading food data:', error);
+  }
 };
 
-export default Login;
+loadFoodData();
 
-COMMAND TO AI: "create an npl code that has log in for react js"
-FROM BLACKBOX AI
 
-INSTRUCTIONS
-First, create a new file Login.js in the src directory and add the following code:
 
-import React, { useState } from 'react';
+const analyzeFoodText = async (text) => {
+  try {
+    await myNlp.process(text);
 
-const Login = (props) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+    const entities = myNlp.find('food');
+    if (entities.length === 0) {
+      Logger.info('No food entities found in text');
+      return 'No food information found.';
+    }
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Call the API to authenticate the user
-    const user = { email, password };
-    props.onLogin(user);
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Email:
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </label>
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </label>
-      <button type="submit">Login</button>
-    </form>
-  );
+    const calories = entities[0].details.calories;
+    if (calories !== undefined) {
+      Logger.info(`Found calorie information for ${entities[0].text}`);
+      return `This food contains approximately ${calories} calories.`;
+    } else {
+      Logger.info('No calorie information found for food entity');
+      return 'Calorie information for this food is unavailable.';
+    }
+  } catch (error) {
+    Logger.error('Error analyzing food text:', error);
+    return 'There was an error analyzing the food information.';
+  }
 };
 
-export default Login;
 
 
-This creates a login form that takes an email and password, and calls the onLogin function passed in as a prop when the form is submitted.
+const analyzeFood = async (text) => {
+  const result = await analyzeFoodText(text);
+  console.log(result); // This will be displayed to the user
+};
 
-Next, create a new file App.js in the src directory and add the following code:
-
-import React, { useState } from 'react';
-import Login from './Login';
-
-function App() {
-  const [user, setUser] = useState(null);
-
-  const handleLogin = (user) => {
-    // Call the API to authenticate the user
-    // If the API returns a successful response, save the user data
-    setUser(user);
-  };
-
-  return (
-    <div>
-      {!user ? (
-        <Login onLogin={handleLogin} />
-      ) : (
-        <div>
-          <h1>Welcome, {user.email}!</h1>
-          <button onClick={() => setUser(null)}>Logout</button>
-        </div>
-      )}
-    </div>
-  );
-}
-
+// Example usage
+const userText = 'What are the calories in a banana?';
+analyzeFood(userText);
 export default App;
