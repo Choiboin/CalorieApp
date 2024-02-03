@@ -15,7 +15,8 @@ class Login extends StatelessWidget {
             // navigate to chatscreen
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => chatscreen()),
+              MaterialPageRoute(
+                  builder: (context) => chatscreen()), // MaterialPageRoute
             );
           },
         ),
