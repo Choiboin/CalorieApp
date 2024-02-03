@@ -5,19 +5,11 @@ Sampaga, John Daniel B.
 
 Cadiz, Eunice Florence
 
-# calorieapp
+How to run:
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Ensure that you have Visual Studio Code and Git installed on your computer.
+2. Clone the repository: "git clone https://github.com/Choiboin/CalorieApp."
+3. In Visual Studio Code, install Flutter and Dart Extension.
+4. Ensure that Flutter and Dart are properly installed and PATH variables are set.
+5. Using the command window/PowerShell/vs code terminal, locate to project directory and make sure to cd calorieapp before entering the command "flutter run."
+6. Choose an emulator from Edge, Chrome, or Windows.
