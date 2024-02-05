@@ -16,7 +16,6 @@ class Login extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Add the "Login" text here
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Text(
@@ -24,7 +23,6 @@ class Login extends StatelessWidget {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
