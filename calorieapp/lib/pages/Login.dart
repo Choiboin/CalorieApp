@@ -16,12 +16,20 @@ class Login extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // ... other widgets
+              // Add the "Login" text here
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  "Login",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   children: [
-                    // Add the text fields here
+                    // Text fields
                     TextField(
                       decoration: InputDecoration(
                         hintText: 'Username or Email',
