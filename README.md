@@ -1,4 +1,4 @@
-# CPE176P React Native NLP Calorie App
+# CPE176P Flutter NLP Calorie App
 Group 5
 
 Sampaga, John Daniel B.
