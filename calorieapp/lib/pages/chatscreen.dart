@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:csv/csv.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:calorieapp/pages/chatgpt.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -82,6 +83,18 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Text('Find Calories'),
           ),
           Text(_calories),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: ElevatedButton(
+              child: Text("Go to ChatGpt"),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => chatgpt()),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
