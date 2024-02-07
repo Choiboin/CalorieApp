@@ -14,8 +14,9 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   csv: ^5.1.1
-  path_provider: ^2.1.
-  chat_gpt_sdk: ^2.1.5
+  path_provider: ^2.1.2
+  flutter_chatgpt_api: ^1.0.0
+
 
 dev_dependencies:
   flutter_test:
