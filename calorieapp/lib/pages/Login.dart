@@ -50,7 +50,7 @@ class Login extends StatelessWidget {
                     // Implement login functionality here
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => chatscreen()),
+                      MaterialPageRoute(builder: (context) => ChatScreen()),
                     );
                   },
                 ),
@@ -110,7 +110,7 @@ class Login extends StatelessWidget {
                     // Navigate to chatscreen
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => chatscreen()),
+                      MaterialPageRoute(builder: (context) => ChatScreen()),
                     );
                   },
                 ),
