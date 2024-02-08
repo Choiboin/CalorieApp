@@ -23,24 +23,24 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _readFoodData() async {
-    // Assuming separate files for food names and calories
     final directory = await getApplicationDocumentsDirectory();
-    final foodNamesFile =
-        File('${directory.path}/epi_r.csv'); // Remove extra ".csv"
-    final calorieDataFile = File('${directory.path}/nutrients_csvfile.csv');
+    final foodNamesFile = File('${directory.path}/3.csv');
+    final calorieDataFile = File('${directory.path}/4.csv');
 
     final foodNames = await _readCsvFile(foodNamesFile);
     final calories = await _readCsvFile(calorieDataFile);
 
     // Ensure both files have data before combining
     if (foodNames.isEmpty || calories.isEmpty) {
-      _calories = 'Error: Missing data in CSV files';
+      setState(() {
+        _calories = 'Error: Missing data in CSV files';
+      });
       return;
     }
 
     foodData = Map.fromIterables(
       foodNames,
-      calories as Iterable<double>,
+      calories.map(double.parse), // Convert strings to doubles
     );
   }
 
