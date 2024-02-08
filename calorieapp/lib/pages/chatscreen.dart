@@ -24,7 +24,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _readFoodData() async {
     final directory = await getApplicationDocumentsDirectory();
-    final foodNamesFile = File('${directory.path}/3.csv');
+    final foodNamesFile = File('${directory.path}/4.csv');
     final calorieDataFile = File('${directory.path}/4.csv');
 
     final foodNames = await _readCsvFile(foodNamesFile);
