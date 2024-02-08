@@ -34,4 +34,7 @@ flutter:
   assets:
   - images/
   - assets/
+  - assets/3.csv
+  - assets/4.csv
+
 

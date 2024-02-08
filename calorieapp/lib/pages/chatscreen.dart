@@ -1,7 +1,6 @@
-import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:csv/csv.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:calorieapp/pages/chatgpt.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -13,55 +12,42 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   Map<String, double> foodData = {};
-  String _calories = 'Enter a food name';
   final TextEditingController _foodController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _readFoodData();
+    _loadCSVs(); // Load CSVs immediately
   }
 
-  Future<void> _readFoodData() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final foodNamesFile = File('${directory.path}/4.csv');
-    final calorieDataFile = File('${directory.path}/4.csv');
+  void _loadCSVs() async {
+    await _loadCSV("assets/3.csv");
+    await _loadCSV("assets/4.csv");
+  }
 
-    final foodNames = await _readCsvFile(foodNamesFile);
-    final calories = await _readCsvFile(calorieDataFile);
+  Future<void> _loadCSV(String assetPath) async {
+    final _rawData = await rootBundle.loadString(assetPath);
+    List<List<dynamic>> _listData = CsvToListConverter().convert(_rawData);
 
-    // Ensure both files have data before combining
-    if (foodNames.isEmpty || calories.isEmpty) {
-      setState(() {
-        _calories = 'Error: Missing data in CSV files';
-      });
-      return;
+    // Assuming the first row contains column titles, skip it
+    if (_listData.isNotEmpty) {
+      _listData = _listData.skip(1).toList();
     }
 
-    foodData = Map.fromIterables(
-      foodNames,
-      calories.map(double.parse), // Convert strings to doubles
-    );
+    foodData.addAll(Map.fromIterable(_listData,
+        key: (element) =>
+            element[0].toLowerCase(), // Convert food names to lowercase
+        value: (element) =>
+            double.parse(element[1]))); // Parse calories as doubles
   }
 
-  Future<List<String>> _readCsvFile(File file) async {
-    if (!await file.exists()) {
-      _calories = 'Error: CSV file not found';
-      return []; // Return an empty list for consistency
-    }
-
-    final lines = await file.readAsLines();
-    final parser = const CsvToListConverter();
-    final parsedData = parser.convert(lines.join('\n'));
-
-    // Explicitly create a list of strings, assuming first column contains names
-    return parsedData.map((row) => row[0] as String).toList();
-  }
+  String _calories = 'Enter a food name'; // Initialize _calories
 
   void _findCalories() {
     final foodName = _foodController.text.toLowerCase();
+    final calories = foodData[foodName];
     setState(() {
-      _calories = foodData[foodName]?.toStringAsFixed(2) ?? 'Food not found';
+      _calories = calories?.toStringAsFixed(2) ?? 'Food not found';
     });
   }
 
@@ -82,7 +68,6 @@ class _ChatScreenState extends State<ChatScreen> {
             onPressed: _findCalories,
             child: Text('Find Calories'),
           ),
-          Text(_calories),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: ElevatedButton(
